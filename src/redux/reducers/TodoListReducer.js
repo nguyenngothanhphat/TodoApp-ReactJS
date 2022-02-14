@@ -1,7 +1,7 @@
+import { toast } from 'react-toastify';
+import { themeManagements } from "../../components/Themes/ThemeManagement";
 import { ToDoListPrimaryTheme } from "../../components/Themes/ToDoListPrimaryTheme";
-import { ToDoListDarkTheme } from "../../components/Themes/ToDoListDarkTheme";
-import { ToDoListLightTheme } from "../../components/Themes/ToDoListLightTheme";
-import { ADD_TASK, CHANGE_THEME, DONE_TASK, DELETE_TASK } from "../types/TodoListType";
+import { ADD_TASK, CHANGE_THEME, DONE_TASK, DELETE_TASK, EDIT_TASK } from "../types/TodoListType";
 
 const initialState = {
   theme: ToDoListPrimaryTheme,
@@ -10,16 +10,15 @@ const initialState = {
     { id: 2, taskName: "Fix Bug 2", checked: false },
     { id: 3, taskName: "Fix Bug 3", checked: true },
   ],
+  editTask: { id: 1, taskName: "Fix Bug 1", checked: false }
 };
 
 const TodoListReducer = (state = initialState, action) => {
   switch (action.type) {
     case CHANGE_THEME : {
-      let themeDuplicate = state.theme;
-      console.log("value", action.theme)
-      themeDuplicate = action.theme;
-      state.theme = themeDuplicate;
-      console.log("Value", state.theme)
+      let index = themeManagements.findIndex(themeManagement => themeManagement.id === parseInt(action.theme));
+      let themeDuplicate = themeManagements[index].theme;
+      state.theme = themeDuplicate
       return { ...state };
     }
     case ADD_TASK : {
@@ -27,7 +26,7 @@ const TodoListReducer = (state = initialState, action) => {
       let newTask;
       let index = taskDuplicate.findIndex(task => task.taskName === action.task.taskName);
       if (index !== -1) {
-        alert("Task đã tồn tại");
+        toast.success("Task này đã tồn tại");
         return {...state};
       } else {
         newTask = action.task;
@@ -53,7 +52,11 @@ const TodoListReducer = (state = initialState, action) => {
           state.tasks = [...taskDuplicate];
         }
       }
-      return {...state};
+      return { ...state };
+    }
+    case EDIT_TASK: {
+      state.editTask = {...action.task};
+      return { ...state };
     }
     default:
       return { ...state };

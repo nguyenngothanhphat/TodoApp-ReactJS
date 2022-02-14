@@ -9,13 +9,20 @@ import {
 import AddTask from "./AddTask";
 import ViewCompleted from "./ViewCompleted";
 import ViewTodo from "./ViewTodo";
-// import { ToDoListDarkTheme } from "../Themes/ToDoListDarkTheme";
 import {connect} from 'react-redux';
 import { changeThemeAction } from "../../redux/actions/TodoListAction";
+import { themeManagements } from "../Themes/ThemeManagement";
 class TodoList extends Component {
   changeTheme = (e) => {
     e.preventDefault();
     this.props.dispatch(changeThemeAction(e.target.value))
+  }
+  showTheme = () => {
+    return themeManagements.map((theme, index) => {
+      return (
+        <option value={theme.id} key={index}>{theme.name}</option>
+      )
+    })
   }
   render() {
     return (
@@ -23,9 +30,7 @@ class TodoList extends Component {
         <Container className="w-50">
           {/* Combo box change theme of toto list */}
           <Dropdown onChange={this.changeTheme} name="changeTheme">
-            <option value="ToDoListPrimaryTheme">Default theme</option>
-            <option value="ToDoListDarkTheme">Dark theme</option>
-            <option value="ToDoListLightTheme">Light theme</option>
+            {this.showTheme()}
           </Dropdown>
           <Heading1 className="display-4">Todo List</Heading1>
           {/* Add Task */}

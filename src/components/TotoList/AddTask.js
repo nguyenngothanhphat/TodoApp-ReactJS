@@ -12,8 +12,6 @@ class AddTask extends Component {
     let {name, value} = e.target
     this.setState({
       [name]: value
-    }, () => {
-      console.log("State", this.state)
     }) 
   }
   addTask = (e) => {
@@ -26,6 +24,13 @@ class AddTask extends Component {
     }
     this.props.dispatch(addTaskAction(objectTask));
   }
+  componentWillReceiveProps (newProps) {
+    console.log("Old props", this.props)
+    console.log("🚀 ~ file: AddTask.js ~ line 29 ~ AddTask ~ componentWillReceiveProps ~ newProps", newProps)
+    this.setState({
+      taskName: newProps.editTask.taskName
+    })
+  }
   render() {
     return (
       <form>
@@ -37,4 +42,10 @@ class AddTask extends Component {
   }
 }
 
-export default connect()(AddTask);
+const mapStateToProps = (state) => {
+  return {
+    editTask: state.TodoListReducer.editTask
+  }
+}
+
+export default connect(mapStateToProps)(AddTask);
