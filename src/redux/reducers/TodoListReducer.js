@@ -61,7 +61,9 @@ const TodoListReducer = (state = initialState, action) => {
     case UPDATE_TASK: {
       let taskDuplicate = state.tasks;
       let index = taskDuplicate.findIndex(task => task.id === action.task.id);
-      taskDuplicate[index] = action.task;
+      if (index !== -1) {
+        taskDuplicate[index] = action.task;
+      }
       state.tasks = [...taskDuplicate];
       return {...state};
     }
