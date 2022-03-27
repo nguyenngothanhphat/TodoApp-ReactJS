@@ -1,15 +1,11 @@
 import { toast } from 'react-toastify';
 import { themeManagements } from "../../components/Themes/ThemeManagement";
 import { ToDoListPrimaryTheme } from "../../components/Themes/ToDoListPrimaryTheme";
-import { ADD_TASK, CHANGE_THEME, DONE_TASK, DELETE_TASK, EDIT_TASK, UPDATE_TASK } from "../types/TodoListType";
+import { ADD_TASK, CHANGE_THEME, DONE_TASK, DELETE_TASK, EDIT_TASK, UPDATE_TASK, GET_TASK_LIST } from "../types/TodoListType";
 
 const initialState = {
   theme: ToDoListPrimaryTheme,
-  tasks: [
-    { id: 1, taskName: "Fix Bug 1", checked: false },
-    { id: 2, taskName: "Fix Bug 2", checked: false },
-    { id: 3, taskName: "Fix Bug 3", checked: true },
-  ],
+  tasks: [],
   editTask: {}
 };
 
@@ -19,6 +15,11 @@ const TodoListReducer = (state = initialState, action) => {
       let index = themeManagements.findIndex(themeManagement => themeManagement.id === parseInt(action.theme));
       let themeDuplicate = themeManagements[index].theme;
       state.theme = themeDuplicate
+      return { ...state };
+    }
+    case GET_TASK_LIST : {
+      console.log("action", action)
+      state.tasks = action.taskLists
       return { ...state };
     }
     case ADD_TASK : {

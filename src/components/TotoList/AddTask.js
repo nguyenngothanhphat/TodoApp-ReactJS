@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
+import Axios from 'axios';
 import { Button } from '../Core/Components/Button';
 import { TextField } from '../Core/Components/TextField';
-import {connect} from 'react-redux';
 import { addTaskAction, updateTaskAction } from '../../redux/actions/TodoListAction';
 
 class AddTask extends Component {
   state = {
-    taskName: ''
+    taskName: '',
   }
   handleChange = (e) => {
     let {name, value} = e.target
@@ -14,15 +15,42 @@ class AddTask extends Component {
       [name]: value
     }) 
   }
+  getAllTaskList = () => {
+    let promise = Axios({
+      url: 'http://svcy.myclass.vn/api/ToDoList/GetAllTask',
+      method: 'GET'
+    });
+    promise.then((result) => {
+      console.log("🚀 ~ file: ViewCompleted.js ~ line 17 ~ ViewCompleted ~ promise.then ~ result", result.data)
+      this.setState({
+        tasks: result.data
+      })
+    })
+    promise.catch((error) => {
+      console.log(error.response.data)
+    })
+  }
   addTask = (e) => {
     e.preventDefault();
     let {taskName} = this.state;
-    let objectTask = {
-      id: Date.now(),
-      taskName: taskName,
-      checked: false
-    }
-    this.props.dispatch(addTaskAction(objectTask));
+    let promise = Axios({
+      url: 'http://svcy.myclass.vn/api/ToDoList/AddTask',
+      method: "POST",
+      data: {"taskName": taskName}
+    });
+    promise.then((result) => {
+      console.log("🚀 ~ file: AddTask.js ~ line 27 ~ AddTask ~ promise.then ~ result", result.data)
+      this.getAllTaskList();
+    });
+    promise.catch((error) => {
+      alert(error.response.data);
+    })
+    // let objectTask = {
+    //   id: Date.now(),
+    //   taskName: taskName,
+    //   checked: false
+    // }
+    // this.props.dispatch(addTaskAction(objectTask));
   }
   updateTask = (e)  => {
     e.preventDefault();
@@ -44,7 +72,7 @@ class AddTask extends Component {
   // }
   render() {
     return (
-      <form>
+      <form onSubmit={this.addTask}>
         <TextField label="Task name: " type="text" name="taskName" value={this.state.taskName} className="w-50" onChange={this.handleChange} />
         <Button className="ml-1" onClick={this.addTask}><i className="fas fa-plus"></i> Add Task</Button>
         <Button className="ml-1" onClick={this.updateTask}><i className="fas fa-upload"></i> Update Task</Button>

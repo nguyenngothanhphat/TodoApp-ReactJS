@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
+import Axios from "axios";
 import { Button } from "../Core/Components/Button";
 import { Table, Th, Thead, Tr } from "../Core/Components/Table";
 
@@ -6,9 +7,20 @@ import {connect} from 'react-redux';
 import { deleteTaskAction, doneTaskAction, editTaskAction } from "../../redux/actions/TodoListAction";
 
 class ViewTodo extends Component {
+  state = {
+    tasks: []
+  }
+  componentWillMount() {
+    this.getAllTaskList()
+  }
+  getAllTaskList = () => {
+    this.props.dispatch({
+      type: 'getTaskListAction'
+    })
+  }
   showTodoTask = () => {
-    return this.props.tasks.map((task, index) => {
-      if (!task.checked) {
+    return this.tasks.map((task, index) => {
+      if (!task.status) {
         return (
           <Tr key={index}>
             <Th style={{ verticalAlign: "middle" }}>{task.taskName}</Th>
